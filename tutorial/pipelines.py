@@ -42,5 +42,5 @@ class TutorialPipeline:
         #     self.conn.commit()
         ### 닥치고 저장하기 ㅎㅎ
         sql = "insert into board(title, stitle, regDt, writer, hit, content, link) values (%s, %s, %s, %s, %s, %s, %s)"
-        self.curs.execute(sql, (item['title'], item['stitle'], item['date'], item['writer'], item['hit'], item['text'], item['link']))
-        self.conn.commit()
+        # self.curs.execute(sql, (item['title'], item['stitle'], item['date'], item['writer'], item['hit'], item['text'], item['link']))
+        # self.conn.commit()
