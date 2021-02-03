@@ -1,4 +1,3 @@
-from tutorial.pipelines import MyCustomPipeline
 import scrapy
 from bs4 import BeautifulSoup
 import time
@@ -12,9 +11,11 @@ from tutorial.news_items import NewsItem
 class CrawlNewsSpider(scrapy.Spider):
     name = 'crawl_news'
 
-    pipeline = set([
-        MyCustomPipeline
-    ])
+    custom_settings = {
+        'ITEM_PIPELINE' : {
+            'tutorial.pipelines.MyCustomPipeline' : 300,
+        }
+    }
     
     def start_requests(self):
         ### 해당 url로 이동
@@ -43,9 +44,10 @@ class CrawlNewsSpider(scrapy.Spider):
 
         ### 데이터 처리부
         # 제목 전처리
-        title = soup.select_one('body > div.header.domPC > div.header-cont.clearfix > div.head-line.clearfix > h1 > span.title').text.strip()
+        title = soup.select_one('body > div.header.domPC > div.header-cont.clearfix > div.head-line.clearfix > h1').text.strip()
         # 날짜 전처리
-        date = soup.select_one("body > div.header.domPC > div.header-cont.clearfix > div.header-time.left").text.strip()
+        date = soup.select_one("body > div.header.domPC > div.header-cont.clearfix > div.header-time.left").text.replace('/', '').strip()
+        date = re.match(r'(\d.*)\s\d.*', date).group(1).replace(' ','-')
         # 출처 전처리
         froms = ' '.join(soup.select_one('body > div.header.domPC > div.header-cont.clearfix > div.source').text.split()).strip()
         froms = re.match(r'^\w+\：(\S+)', froms).group(1)

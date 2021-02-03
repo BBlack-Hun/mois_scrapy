@@ -45,7 +45,6 @@ class MyCustomPipeline:
 
     def __init__(self, mongo_uri, mongo_db):
         # 몽고DB 초기화??
-        ...
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
 
@@ -70,4 +69,5 @@ class MyCustomPipeline:
             logging.debug("post added to MongoDB")
             return item
         except:
-            print("응 오류.. ㅎㅎ")
+            print('오류------------------------------------------오류--------------')
+            return item

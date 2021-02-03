@@ -67,7 +67,7 @@ DOWNLOAD_MAXSIZE = 629145600
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'tutorial.pipelines.TutorialPipeline': 300,
-   'tutorial.pipelines.MyCustomPipeline' : 1,
+   'tutorial.pipelines.MyCustomPipeline' : 400,
 }
 MONGO_URL = 'mongodb://admin:password@localhost:27017/News?authSource=admin'
 MONGO_DATABASE = 'News'
