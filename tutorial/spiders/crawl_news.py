@@ -1,3 +1,4 @@
+from tutorial.pipelines import MyCustomPipeline
 import scrapy
 from bs4 import BeautifulSoup
 import time
@@ -5,14 +6,14 @@ import random
 import json
 import re
 from tutorial.news_items import NewsItem
-from tutorial.pipelines import MyCustom
+
 
 
 class CrawlNewsSpider(scrapy.Spider):
     name = 'crawl_news'
 
     pipeline = set([
-        MyCustom
+        MyCustomPipeline
     ])
     
     def start_requests(self):

@@ -14,6 +14,7 @@ import os
 import datetime
 import logging
 import pymysql
+import pymongo
 
 class TutorialPipeline:
     def __init__(self):
@@ -38,10 +39,35 @@ class TutorialPipeline:
         self.curs.execute(sql, (item['title'], item['stitle'], item['date'], item['writer'], item['hit'], item['text'], item['link_url']))
         self.conn.commit()
 
-class MyCustom:
-    def __init__(self):
+class MyCustomPipeline:
+
+    collection_name = "ch_news"
+
+    def __init__(self, mongo_uri, mongo_db):
+        # 몽고DB 초기화??
         ...
+        self.mongo_uri = mongo_uri
+        self.mongo_db = mongo_db
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            mongo_uri = crawler.settings.get('MONGO_URI'),
+            mongo_db = crawler.settings.get("MONGO_DATABASE")
+        )
+    
+    def open_spider(self, spider):
+        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.db = self.client[self.mongo_db]
+
+    def close_spider(self, spider):
+        self.client.close()
 
     def process_item(self, item, spider):
         ### DB에 저장
-        ...
+        try:
+            self.db[self.collection_name].insert(dict(item))
+            logging.debug("post added to MongoDB")
+            return item
+        except:
+            print("응 오류.. ㅎㅎ")
