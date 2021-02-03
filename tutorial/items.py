@@ -8,5 +8,6 @@ class TutorialItem(scrapy.Item):
     writer = scrapy.Field() # 작성자
     hit = scrapy.Field() # 조회수
     text = scrapy.Field() #내용
-    link = scrapy.Field()
+    link_url = scrapy.Field() # 첨부링크
+    link = scrapy.Field() # 첨부파일
     pass

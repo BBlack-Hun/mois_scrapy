@@ -53,9 +53,9 @@ DOWNLOAD_MAXSIZE = 629145600
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'tutorial.middlewares.TutorialDownloaderMiddleware': 543,
-#}
+# DOWNLOADER_MIDDLEWARES = {
+#    'tutorial.middlewares.TutorialDownloaderMiddleware': 100,
+# }
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -92,3 +92,9 @@ ITEM_PIPELINES = {
 
 # 추출할떄 utf-8로 추출
 FEED_EXPORT_ENCODING = 'utf-8'
+
+# 파일 저장
+FIELS_STORE = 'downloads'
+
+DEFAULT_FILES_URLS_FIELD= "link_url"
+DEFAULT_FILES_RESULT_FIELD = "link"

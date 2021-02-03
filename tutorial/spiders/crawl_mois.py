@@ -1,16 +1,15 @@
 #-*- coding: UTF-8 -*-
 import scrapy
 from tutorial.items import TutorialItem
+from urllib.parse import unquote
 from bs4 import BeautifulSoup
 import time
 import random
 import re
-import sys
 
 
 class CrawlMoisSpider(scrapy.Spider):
     name = 'crawl_mois'
-
 
     def start_requests(self):
         # 나 이 사이트 파싱할꺼임...
@@ -20,14 +19,18 @@ class CrawlMoisSpider(scrapy.Spider):
 
     def CheckUrl(self, response):
         soup = BeautifulSoup(response.text, 'html.parser')
+        # 1페이지의 총 페이지에서 최종 페이지를 추출
         total = ' '.join(soup.select_one('#print_area > div.board_top_area > form > span').text.split())
-        total = re.match(r'\s?전체\s?\:\s?\d+건\s?1\/(\d+)', total)        
-        print(total)
+        # 숫자만 추출
+        total = re.match(r'\s?전체\s?\:\s?\d+건\s?1\/(\d+)', total)
+        # 사용자가 볼 수 있도록 출력
         print("총 페이지 ", total.group(1))
+        # 사용자로부터 몇페이지까지 파싱할 것인지 확인
         Limit = int(input("파싱하고 싶은 페이지 혹은 날짜를 입력하시오(날짜는 20200101같이 .을 제외하고입력 또한 입력한 날짜까지 파싱) "))
-        if Limit < int(total.group(1)):
+        # 사용자가 페이지 수를 입력한다면?
+        if Limit <= int(total.group(1)):
             n = 1
-            while (n < Limit):
+            while (n <= Limit):
                 
                 url = 'https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardList.do?bbsId=BBSMSTR_000000000008&searchCnd=0&searchWrd=&pageIndex='
                 # url 페이지 번호 붙이기
@@ -38,6 +41,7 @@ class CrawlMoisSpider(scrapy.Spider):
                 yield scrapy.Request(url, self.parse)
                 # 완료 후 다음 페이지 ㄱㄱ
                 n +=1
+        # 날짜를 입력한다면?? (구현중)
         else:
             date = soup.select('#print_area > div.table_wrap.type_01 > form > table > tbody > tr > td:nth-child(5)')
             n = 1
@@ -77,7 +81,6 @@ class CrawlMoisSpider(scrapy.Spider):
     def semiParse(self, response, Limit):
         ...
 
-
     def itemParse(self, response):
         soup = BeautifulSoup(response.text, 'html.parser')
         # 제목 full text
@@ -100,9 +103,13 @@ class CrawlMoisSpider(scrapy.Spider):
         hit = dawrhi.group(3)
         # 내용
         text = ' '.join(soup.select_one('#desc_pc').text.split()).strip()
+        # 첨부파일 명
+        linkName = ' '.join(soup.select_one('#print_area > form > div > dl.download > dd > div > ul > li > a:nth-child(1)').text.split())
+        linkName = linkName.split('[')[0].strip()
         # 첨부링크
         link = soup.select_one('#print_area > form > div > dl.download > dd > div > ul > li > a:nth-child(1)')['href']
         jLink = response.urljoin(link)
+        
         ### 출력 부분
         print("제목:", trr)
         print("부제:", strr)
@@ -121,6 +128,25 @@ class CrawlMoisSpider(scrapy.Spider):
         item['writer'] = writer
         item['hit'] = hit
         item['text'] = text
-        item['link'] = jLink
+        item['link_url'] = jLink
+        # item['link'] = 
         
         yield item
+
+        if (jLink):
+            yield scrapy.Request(jLink, self.save, meta={'linkName': linkName})
+
+
+    # 첨부 파일 저장 -1
+    def save(self, response):
+        d = response.headers[b'Content-Disposition']
+        mach = re.fullmatch(r".*attachment; filename=\"(.*\w).*", unquote(d.decode('utf-8')))
+        response.meta['filename'] = mach.group(1)
+        yield self.rSave(response)
+    
+    # 첨부 파일 저장 -2
+    def rSave(self, response):
+        filename = response.meta['filename']
+        path = '/var/icngroup/jhkim95/Downloads/moisFiles'+ filename
+        with open(path, 'wb') as f:
+            f.write(response.body)
