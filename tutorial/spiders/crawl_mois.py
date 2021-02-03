@@ -103,10 +103,10 @@ class CrawlMoisSpider(scrapy.Spider):
         hit = dawrhi.group(3)
         # 내용
         text = ' '.join(soup.select_one('#desc_pc').text.split()).strip()
-        # 첨부파일 명
+        # 첨부파일 명 (하나만 체크)
         linkName = ' '.join(soup.select_one('#print_area > form > div > dl.download > dd > div > ul > li > a:nth-child(1)').text.split())
         linkName = linkName.split('[')[0].strip()
-        # 첨부링크
+        # 첨부링크 (하나만 체크)
         link = soup.select_one('#print_area > form > div > dl.download > dd > div > ul > li > a:nth-child(1)')['href']
         jLink = response.urljoin(link)
         

@@ -67,6 +67,7 @@ DOWNLOAD_MAXSIZE = 629145600
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'tutorial.pipelines.TutorialPipeline': 300,
+   'tutorial.pipelines.MyCustom' : 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
