@@ -11,5 +11,6 @@ class CrawlLawSpider(scrapy.Spider):
 
     def parse(self, response):
         soup = BeautifulSoup(response.text, 'html.parser')
-        print(soup)
+        url = soup.selcet_one('body > div.conbody > div.area_contents > div.contents > div > dl:nth-child(3) > dd:nth-child(3) > table > tbody > tr:nth-child(5) > td')
+        print(url)
         pass

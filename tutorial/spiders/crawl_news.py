@@ -11,16 +11,20 @@ from tutorial.news_items import NewsItem
 class CrawlNewsSpider(scrapy.Spider):
     name = 'crawl_news'
 
-    custom_settings = {
-        'ITEM_PIPELINE' : {
-            'tutorial.pipelines.MyCustomPipeline' : 300,
-        }
-    }
-    
     def start_requests(self):
         ### 해당 url로 이동
-        AJAX_URL = 'http://da.wa.news.cn/nodeart/page?nid=11228087&pgnum=1&cnt=10&attr=&tp=1&orderby=1&callback=jQuery112407663660505059227_1612334311918&_=1612334311919'
-        yield scrapy.FormRequest(AJAX_URL, self.oParse)
+        # AJAX_URLS = 'http://da.wa.news.cn/nodeart/page?nid=11228087&pgnum=2&cnt=10&attr=&tp=1&orderby=1'
+        jQuery = 1612410466223
+        for i in range(1, 100):
+            try:
+                AJAX_URLS = 'http://da.wa.news.cn/nodeart/page?nid=11228087&pgnum={}&cnt=10&attr=&tp=1&orderby=1&callback=jQuery112402859590184527312_1612410232223&_={}'.format(i, jQuery)
+                jQuery+=1
+                print("테스트입니다. ", AJAX_URLS)
+                time.sleep(3)
+                yield scrapy.FormRequest(AJAX_URLS, self.oParse)
+            except:
+                break
+
 
     def oParse(self, response):
         ## json 전처리 (str)
@@ -33,9 +37,10 @@ class CrawlNewsSpider(scrapy.Spider):
         # list 항목 추출
         dataList = jsonresponse['data']
         # 첫번째 링크만 접근
-        for i in dataList['list']:
+        for i in dataList['list']:           
             print("링크: ", i['LinkUrl'])
             durl = i['LinkUrl']
+            time.sleep(random.randint(1,2))
             yield scrapy.Request(durl, self.itemParser)
 
     def itemParser(self, response):
@@ -56,7 +61,8 @@ class CrawlNewsSpider(scrapy.Spider):
         content = ''
         for i in contents:
             if str(i).startswith("<p>"):
-                content += i.text.strip() + "{}".format("" if i.text.strip()[-1] == '?' or i.text.strip()[-1] == '。' else " "  )
+                content += ' '.join(i.text.split()).strip()
+                # content += i.text.strip() + "{}".format("" if i.text.strip()[-1] == '?' or i.text.strip()[-1] == '。' else " "  )
         # 작성자 전처리 
         writer = ' '.join(soup.select_one('#articleEdit > span.editor').text.split()).strip()
         writer = re.match(r'.*\:(\S+).*', writer).group(1)
@@ -68,13 +74,13 @@ class CrawlNewsSpider(scrapy.Spider):
         print("내용: ", content)
         print('작성자: ', writer)
 
-        # item 연동
-        item = NewsItem()
+        # # item 연동
+        items = NewsItem()
 
-        item['title'] = title
-        item['date'] = date
-        item['froms'] = froms
-        item['text'] = content
-        item['writer'] = writer
+        items['title'] = title
+        items['date'] = date
+        items['froms'] = froms
+        items['text'] = content
+        items['writer'] = writer
 
-        yield item
+        yield items

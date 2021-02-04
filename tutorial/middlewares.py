@@ -99,6 +99,7 @@ class TutorialDownloaderMiddleware(object):
         sleep(5)
 
         return HtmlResponse( url=request.url, body=body, encoding='utf-8', request=request)
+    
     # 아래의 함수는 미사용.
     def process_response(self, request, response, spider):
         

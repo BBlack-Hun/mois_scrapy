@@ -66,10 +66,12 @@ DOWNLOAD_MAXSIZE = 629145600
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'tutorial.pipelines.TutorialPipeline': 300,
-   'tutorial.pipelines.MyCustomPipeline' : 400,
+   # 'tutorial.pipelines.TutorialPipeline': 300,
+   'tutorial.pipelines.NewsPipeline' : 1,
 }
-MONGO_URL = 'mongodb://admin:password@localhost:27017/News?authSource=admin'
+
+### 몽고DB 설정
+MONGO_URL = "mongodb://admin:admin@localhost:27017/authentication_source='admin'"
 MONGO_DATABASE = 'News'
 
 # Enable and configure the AutoThrottle extension (disabled by default)

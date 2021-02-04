@@ -16,7 +16,7 @@ import logging
 import pymysql
 import pymongo
 
-class TutorialPipeline:
+class TutorialPipeline(object):
     def __init__(self):
         # self.conn = pymysql.connect(host ="localhost", port=3306, user="root", password="root", db="mois", charset="utf8")
         # self.cursor = self.conn.cursor()
@@ -39,35 +39,31 @@ class TutorialPipeline:
         self.curs.execute(sql, (item['title'], item['stitle'], item['date'], item['writer'], item['hit'], item['text'], item['link_url']))
         self.conn.commit()
 
-class MyCustomPipeline:
+class NewsPipeline(object):
 
-    collection_name = "ch_news"
+    collection_name = 'ch_News'
 
     def __init__(self, mongo_uri, mongo_db):
-        # 몽고DB 초기화??
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
-
+    
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
             mongo_uri = crawler.settings.get('MONGO_URI'),
-            mongo_db = crawler.settings.get("MONGO_DATABASE")
+            mongo_db = crawler.settings.get('MONGO_DATABASE')
         )
     
     def open_spider(self, spider):
-        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri)        
+        self.client['admin'].authenticate('admin', 'admin')
         self.db = self.client[self.mongo_db]
-
+        
+    
     def close_spider(self, spider):
         self.client.close()
 
     def process_item(self, item, spider):
-        ### DB에 저장
-        try:
-            self.db[self.collection_name].insert(dict(item))
-            logging.debug("post added to MongoDB")
-            return item
-        except:
-            print('오류------------------------------------------오류--------------')
-            return item
+        
+        self.db[self.collection_name].insert(dict(item))
+        return item
