@@ -129,7 +129,6 @@ class CrawlMoisSpider(scrapy.Spider):
         item['hit'] = hit
         item['text'] = text
         item['link_url'] = jLink
-        # item['link'] = 
         
         yield item
 
