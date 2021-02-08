@@ -40,11 +40,11 @@ DOWNLOAD_MAXSIZE = 629145600
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-    'Referer': 'https://www.law.go.kr/LSO/openApi/guideResult.do, https://www.law.go.kr/DRF/lawSearch.do?OC=test&target=law&type=HTML'
-}
+# DEFAULT_REQUEST_HEADERS = {
+# #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+# #   'Accept-Language': 'en',
+#     'Referer': ['https://www.law.go.kr/LSO/openApi/guideResult.do', 'https://www.law.go.kr/DRF/lawSearch.do?OC=test&target=law&type=HTML']
+# }
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
@@ -75,8 +75,8 @@ ITEM_PIPELINES = {
 
 ### 몽고DB 설정
 MONGO_URL = "mongodb://admin:admin@localhost:27017/authentication_source='admin'"
-# MONGO_DATABASE = 'News'
-MONGO_DATABASE = 'Laws'
+MONGO_DATABASE = 'News'
+# MONGO_DATABASE = 'Laws'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

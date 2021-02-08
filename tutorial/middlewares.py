@@ -10,10 +10,6 @@ from scrapy.utils.python import to_bytes
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from time import sleep
-
 
 class TutorialSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -72,33 +68,13 @@ class TutorialDownloaderMiddleware(object):
         # This method is used by Scrapy to create your spiders.
         middleware = cls()
         crawler.signals.connect(middleware.spider_opened, signal=signals.spider_opened)
-        crawler.signals.connect(middleware.spider_closed, signal=signals.spider_closed)
         return middleware
 
     def spider_opened(self, spider):
-        CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
-        WINDOW_SIZE = "1920, 1080"
-
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument(f"--window-size={WINDOW_SIZE}")
-
-        driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
-        self.driver = driver
-
-    def spider_closed(self, spider):
-        self.driver.close()
+        pass
 
     def process_request(self, request, spider):
-        self.driver.get( request.url )
-
-        body = to_bytes( text = self.driver.page_source )
-
-        sleep(5)
-
-        return HtmlResponse( url=request.url, body=body, encoding='utf-8', request=request)
+        pass
     
     # 아래의 함수는 미사용.
     def process_response(self, request, response, spider):
