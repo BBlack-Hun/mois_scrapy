@@ -41,8 +41,8 @@ class TutorialPipeline(object):
 
 class NewsPipeline(object):
 
-    collection_name = 'ch_News'
-    # collection_name = 'law'
+    # collection_name = 'ch_News'
+    collection_name = 'law'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri

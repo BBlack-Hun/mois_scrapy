@@ -37,7 +37,7 @@ class CrawlLawSpider(scrapy.Spider):
             time.sleep(random.randint(2,3))
             # Request를 보낸다.
             yield scrapy.Request(durl, self.itemParse, meta={'id': i, 'fYd': j})
-
+            break
     def itemParse(self, response):
         soup = BeautifulSoup(response.text, 'xml')
 
@@ -49,16 +49,31 @@ class CrawlLawSpider(scrapy.Spider):
         # 시행일 전처리
         date = soup.select_one('시행일자').text
         date = str(datetime.strptime(date, "%Y%m%d").date())
-       
         # 소관부처
         froms = soup.select_one('소관부처').text
         # 번호
         number = soup.select_one('전화번호').text
         # 내용 전처리
-        contents = soup.select('조문내용')
+        # 조문내용
+        contents = soup.findAll('조문내용')
         content = ''
         for i in contents:
-            content += i.text.replace('\n','').replace('\t','').replace('\"','').strip()
+            print(i.text)
+            # content += i.text.replace('\n','').replace('\t','').replace('\"','').strip()
+            # 항
+            # if soup.select('항'):
+            #     hangs = soup.select('항내용')
+            #     print(hangs)
+            #     for j in hangs:
+            #         print(' '.join(j.text.split()).strip())
+            #         # content += ' '.join(j.text.split()).strip()
+            #          # 호
+            #         if soup.select('호'):
+            #             hos = soup.select('호내용')
+            #             for k in hos:
+            #                 print(' '.join(k.text.split()).strip())
+            #                 content += ' '.join(k.text.split()).strip()
+            # break
         # 부칙
         Addendum = []
         Addendums = soup.select('부칙내용')
