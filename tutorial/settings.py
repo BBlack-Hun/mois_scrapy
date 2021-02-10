@@ -66,12 +66,12 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    ### maria
-#    # 'tutorial.pipelines.TutorialPipeline': 300,
-#    ### mongo
-#    'tutorial.pipelines.NewsPipeline' : 1,
-# }
+ITEM_PIPELINES = {
+   ### maria
+   # 'tutorial.pipelines.TutorialPipeline': 300,
+   ### mongo
+   'tutorial.pipelines.NewsPipeline' : 1,
+}
 
 ### 몽고DB 설정
 MONGO_URL = "mongodb://admin:admin@localhost:27017/authentication_source='admin'"

@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 import time
 import random
 import re
-import xml.etree.ElementTree as ET
 from datetime import datetime
 
 from soupsieve.css_types import Selector
@@ -37,11 +36,11 @@ class CrawlLawSpider(scrapy.Spider):
             time.sleep(random.randint(2,3))
             # Request를 보낸다.
             yield scrapy.Request(durl, self.itemParse, meta={'id': i, 'fYd': j})
-            break
+
     def itemParse(self, response):
         soup = BeautifulSoup(response.text, 'xml')
 
-        ### 각 필요한 내용 추출 - 전처리
+        # ### 각 필요한 내용 추출 - 전처리
         # 제목
         title = soup.select_one('법령명_한글').text
         # 약칭
@@ -53,27 +52,29 @@ class CrawlLawSpider(scrapy.Spider):
         froms = soup.select_one('소관부처').text
         # 번호
         number = soup.select_one('전화번호').text
+
         # 내용 전처리
         # 조문내용
-        contents = soup.findAll('조문내용')
         content = ''
-        for i in contents:
-            print(i.text)
-            # content += i.text.replace('\n','').replace('\t','').replace('\"','').strip()
-            # 항
-            # if soup.select('항'):
-            #     hangs = soup.select('항내용')
-            #     print(hangs)
-            #     for j in hangs:
-            #         print(' '.join(j.text.split()).strip())
-            #         # content += ' '.join(j.text.split()).strip()
-            #          # 호
-            #         if soup.select('호'):
-            #             hos = soup.select('호내용')
-            #             for k in hos:
-            #                 print(' '.join(k.text.split()).strip())
-            #                 content += ' '.join(k.text.split()).strip()
-            # break
+        for data in soup.findAll('조문단위'):
+            if data.조문내용:
+                # print(data.조문내용.string.strip())
+                content += data.조문내용.string.strip()
+            if data.항:
+                if data.항내용 is not None:
+                    for j in data.findAll('항'):
+                        # print(j.항내용.string.strip())
+                        content += j.항내용.string.strip()
+                        if j.find('호') is not None:
+                            for k in j.findAll('호내용'):    
+                                # print(k.string.strip())
+                                content += k.string.strip()
+                else:
+                    if data.항.find('호') is not None:
+                        for j in data.항.findAll('호내용'):
+                            # print(j.string.strip())
+                            content += j.string.strip()
+        
         # 부칙
         Addendum = []
         Addendums = soup.select('부칙내용')
