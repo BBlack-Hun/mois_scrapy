@@ -52,6 +52,10 @@ class CrawlLawSpider(scrapy.Spider):
         froms = soup.select_one('소관부처').text
         # 번호
         number = soup.select_one('전화번호').text
+        # 공포번호
+        pnum = soup.select_one('공포번호').text
+        # 법종구분
+        pcat = soup.select_one('법종구분').text
 
         # 내용 전처리
         # 조문내용
@@ -83,6 +87,9 @@ class CrawlLawSpider(scrapy.Spider):
             Addendum.append(i)
         # 다운로드 링크
         Link = 'https://www.law.go.kr/LSW/lsNewHwpSave.do?trSeq={}&efDvPop=&nwJoYnInfo=Y&lastCheck=Y&ancYnChk=0&lsiSeq={}&efYd={}&chrClsCd=010202&joNo=0001:00,0002:00,0003:00,0003:02,0004:00,0005:00,0006:00,0007:00&nwJoYnInfo=Y&efGubun=Y&joAllCheck=Y&joEfOutPutYn=on&mokChaChk=N'.format(response.meta['id'], response.meta['id'], response.meta['fYd'])
+        # 파일 네임
+        linkName = title + '(' + pcat + ')(제' + pnum + '호)(' + date.replace('-','') + ')'
+        
         
         ### 출력부
         # print("제목: ", title)
@@ -93,6 +100,7 @@ class CrawlLawSpider(scrapy.Spider):
         # print("내용: ", content)
         # print("부칙: ", Addendum)
         # print("파일 링크:", Link)
+        # print("파일이름: ", linkName)
 
 
         ### Item 화
@@ -106,6 +114,7 @@ class CrawlLawSpider(scrapy.Spider):
         item['content'] = content
         item['Addendum'] = Addendum
         item['Link'] = Link
+        item['linkName'] = linkName
 
         yield item
 

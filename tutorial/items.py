@@ -9,5 +9,5 @@ class TutorialItem(scrapy.Item):
     hit = scrapy.Field() # 조회수
     text = scrapy.Field() #내용
     link_url = scrapy.Field() # 첨부링크
-    link = scrapy.Field() # 첨부파일
+    linkName = scrapy.Field() # 첨부파일이름
     pass

@@ -41,6 +41,7 @@ class CrawlMoisSpider(scrapy.Spider):
                 yield scrapy.Request(url, self.parse)
                 # 완료 후 다음 페이지 ㄱㄱ
                 n +=1
+
         # 날짜를 입력한다면?? (구현중)
         else:
             date = soup.select('#print_area > div.table_wrap.type_01 > form > table > tbody > tr > td:nth-child(5)')
@@ -129,6 +130,7 @@ class CrawlMoisSpider(scrapy.Spider):
         item['hit'] = hit
         item['text'] = text
         item['link_url'] = jLink
+        item['linkName'] = linkName
         
         yield item
 
@@ -146,6 +148,6 @@ class CrawlMoisSpider(scrapy.Spider):
     # 첨부 파일 저장 -2
     def rSave(self, response):
         filename = response.meta['filename']
-        path = '/var/icngroup/jhkim95/Downloads/moisFiles'+ filename
+        path = '/var/icngroup/jhkim95/Downloads/moisFiles/'+ filename
         with open(path, 'wb') as f:
             f.write(response.body)

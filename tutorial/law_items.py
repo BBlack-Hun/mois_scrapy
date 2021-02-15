@@ -10,4 +10,5 @@ class LawItem(scrapy.Item):
     content = scrapy.Field() #내용
     Addendum = scrapy.Field() # 부칙
     Link = scrapy.Field() # 파일 링크
+    linkName = scrapy.Field() # 파일 이름
     pass

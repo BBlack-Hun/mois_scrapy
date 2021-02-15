@@ -35,8 +35,8 @@ class TutorialPipeline(object):
 
     def process_item(self, item, spider):
         ### DB에 저장
-        sql = "insert into board(title, stitle, regDt, writer, hit, content, link) values (%s, %s, %s, %s, %s, %s, %s)"
-        self.curs.execute(sql, (item['title'], item['stitle'], item['date'], item['writer'], item['hit'], item['text'], item['link_url']))
+        sql = "insert into board(title, stitle, regDt, writer, hit, content, link, linkname) values (%s, %s, %s, %s, %s, %s, %s, %s)"
+        self.curs.execute(sql, (item['title'], item['stitle'], item['date'], item['writer'], item['hit'], item['text'], item['link_url'], item['linkName']))
         self.conn.commit()
 
 class NewsPipeline(object):
