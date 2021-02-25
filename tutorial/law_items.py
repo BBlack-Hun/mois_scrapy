@@ -9,6 +9,7 @@ class LawItem(scrapy.Item):
     number = scrapy.Field() # 소관부처 번호
     content = scrapy.Field() #내용
     Addendum = scrapy.Field() # 부칙
-    Link = scrapy.Field() # 파일 링크
-    linkName = scrapy.Field() # 파일 이름
+    link = scrapy.Field() # 파일 링크
+    linkname = scrapy.Field() # 파일 이름
+    path = scrapy.Field() # 저장용
     pass

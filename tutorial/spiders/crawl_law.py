@@ -89,6 +89,8 @@ class CrawlLawSpider(scrapy.Spider):
         Link = 'https://www.law.go.kr/LSW/lsNewHwpSave.do?trSeq={}&efDvPop=&nwJoYnInfo=Y&lastCheck=Y&ancYnChk=0&lsiSeq={}&efYd={}&chrClsCd=010202&joNo=0001:00,0002:00,0003:00,0003:02,0004:00,0005:00,0006:00,0007:00&nwJoYnInfo=Y&efGubun=Y&joAllCheck=Y&joEfOutPutYn=on&mokChaChk=N'.format(response.meta['id'], response.meta['id'], response.meta['fYd'])
         # 파일 네임
         linkName = title + '(' + pcat + ')(제' + pnum + '호)(' + date.replace('-','') + ')'
+        # 저장용
+        path = title + '.hwp'
         
         
         ### 출력부
@@ -113,8 +115,9 @@ class CrawlLawSpider(scrapy.Spider):
         item['number'] = number
         item['content'] = content
         item['Addendum'] = Addendum
-        item['Link'] = Link
-        item['linkName'] = linkName
+        item['link'] = Link
+        item['linkname'] = linkName
+        item['path'] = path
 
         yield item
 
@@ -126,6 +129,7 @@ class CrawlLawSpider(scrapy.Spider):
     def save(self, response):
         soup = BeautifulSoup(response.text, 'xml')
         title = soup.find('FIELDBEGIN')
+        print(title)
         title = title['Name']
         
         # 저장을 위한 파일 이름
